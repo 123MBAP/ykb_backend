@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  PROVIDER
+  CUSTOMER
+}
+
+enum ProviderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentProcessor {
+  FLUTTERWAVE
+}
+
+enum RequestStatus {
+  PENDING
+  IN_REVIEW
+  RESOLVED
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  phone        String?  @unique
+  name         String
+  passwordHash String
+  role         Role     @default(CUSTOMER)
+
+  provider Provider?
+
+  bookings Booking[] @relation("CustomerBookings")
+  requests Request[]
+  reviews  Review[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Provider {
+  id                    String         @id @default(uuid())
+  userId                String         @unique
+  user                  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status                ProviderStatus @default(PENDING)
+  bio                   String?
+  profileImageUrl       String?
+  profileImagePublicId  String?
+
+  services Service[]
+  bookings Booking[] @relation("ProviderBookings")
+  reviews  Review[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ServiceCategory {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  slug      String    @unique
+  services  Service[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Service {
+  id              String   @id @default(uuid())
+  title           String
+  description     String?
+  basePrice       Decimal  @db.Decimal(12, 2)
+  currency        String   @default("RWF")
+  isPlatformOwned Boolean  @default(false)
+
+  providerId String?
+  provider   Provider? @relation(fields: [providerId], references: [id], onDelete: SetNull)
+
+  categoryId String
+  category   ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  images   ServiceImage[]
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([providerId])
+  @@index([categoryId])
+}
+
+model ServiceImage {
+  id        String   @id @default(uuid())
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  url       String
+  publicId  String
+  createdAt DateTime @default(now())
+}
+
+model Booking {
+  id         String        @id @default(uuid())
+  customerId String
+  customer   User          @relation("CustomerBookings", fields: [customerId], references: [id], onDelete: Restrict)
+
+  providerId String?
+  provider   Provider?     @relation("ProviderBookings", fields: [providerId], references: [id], onDelete: SetNull)
+
+  serviceId   String
+  service     Service      @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  scheduledAt DateTime
+  location    String
+  notes       String?
+  status      BookingStatus @default(PENDING)
+
+  payment Payment?
+  review  Review?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([providerId])
+  @@index([serviceId])
+}
+
+model Payment {
+  id                String          @id @default(uuid())
+  bookingId          String          @unique
+  booking            Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  amount             Decimal         @db.Decimal(12, 2)
+  platformFee        Decimal         @db.Decimal(12, 2)
+  currency           String          @default("RWF")
+  status             PaymentStatus   @default(PENDING)
+  processor          PaymentProcessor?
+  processorReference String?
+  processorPayload   Json?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+}
+
+model Request {
+  id            String        @id @default(uuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  description   String
+  location      String
+  preferredDate DateTime?
+  budget        Decimal?      @db.Decimal(12, 2)
+  status        RequestStatus @default(PENDING)
+  adminNotes    String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([userId])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  bookingId String   @unique
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  providerId String
+  provider  Provider @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([providerId])
+}
