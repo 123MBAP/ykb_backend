@@ -9,6 +9,9 @@ import { requestsRouter } from './modules/requests/requests.routes';
 import { reviewsRouter } from './modules/reviews/reviews.routes';
 import { uploadsRouter } from './modules/uploads/uploads.routes';
 import { adminRouter } from './modules/admin/admin.routes';
+import { publicServicesRouter } from './modules/publicServices/publicServices.routes';
+import { languagesRouter } from './modules/languages/languages.routes';
+import { starterGuideCategoriesRouter } from './modules/starterGuideCategories/starterGuideCategories.routes';
 
 export const routes = Router();
 
@@ -22,3 +25,12 @@ routes.use('/requests', requestsRouter);
 routes.use('/reviews', reviewsRouter);
 routes.use('/uploads', uploadsRouter);
 routes.use('/admin', adminRouter);
+
+// Simple services list for the frontend marketing/UI.
+routes.use('/services', publicServicesRouter);
+
+// Translator languages + dynamic pricing.
+routes.use('/languages', languagesRouter);
+
+// Starter guide categories + optional subcategories.
+routes.use('/starter-guide-categories', starterGuideCategoriesRouter);

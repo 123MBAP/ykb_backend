@@ -7,6 +7,10 @@ const isPrismaKnownError = (err: unknown): err is Prisma.PrismaClientKnownReques
     return err instanceof Prisma.PrismaClientKnownRequestError;
 };
 
+const isPrismaInitError = (err: unknown): err is Prisma.PrismaClientInitializationError => {
+    return err instanceof Prisma.PrismaClientInitializationError;
+};
+
 export const errorHandler = (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof ZodError) {
         return res.status(400).json({
@@ -32,6 +36,18 @@ export const errorHandler = (err: unknown, _req: Request, res: Response, _next: 
         return res.status(400).json({
             error: {
                 code: 'DB_ERROR',
+                message: err.message
+            }
+        });
+    }
+
+    if (isPrismaInitError(err)) {
+        // Example: P1001 (Can't reach database server)
+        const code = (err as any).errorCode ?? 'DB_UNAVAILABLE';
+        const status = code === 'P1001' ? 503 : 500;
+        return res.status(status).json({
+            error: {
+                code: 'DB_UNAVAILABLE',
                 message: err.message
             }
         });

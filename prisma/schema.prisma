@@ -44,6 +44,12 @@ enum RequestStatus {
   CANCELLED
 }
 
+enum StarterGuideCategoryGroup {
+  APP
+  INFRASTRUCTURE
+  OTHERS
+}
+
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
@@ -192,4 +198,37 @@ model Review {
   updatedAt DateTime @updatedAt
 
   @@index([providerId])
+}
+
+// Simple service definitions for the marketing/UI list.
+// This is intentionally minimal (title + description) and uses a serial integer ID.
+model PublicService {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("services")
+}
+
+model Language {
+  id        Int      @id @default(autoincrement())
+  title     String   @unique
+  prices    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("languages")
+}
+
+model StarterGuideCategory {
+  id            Int      @id @default(autoincrement())
+  category      String   @unique
+  group         StarterGuideCategoryGroup @default(OTHERS)
+  subcategories Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("starter_guide_categories")
 }
