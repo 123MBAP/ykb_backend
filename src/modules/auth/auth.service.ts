@@ -36,7 +36,16 @@ export const authService = {
             });
 
             if (role === Role.PROVIDER) {
-                await tx.provider.create({ data: { userId: created.id } });
+                await tx.provider.create({
+                    data: {
+                        userId: created.id,
+                        businessName: input.businessName,
+                        mainService: input.service,
+                        location: input.location,
+                        moneyRange: input.moneyRange,
+                        serviceOfferings: input.services ?? undefined
+                    }
+                });
             }
 
             return created;

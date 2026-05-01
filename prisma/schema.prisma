@@ -73,6 +73,11 @@ model Provider {
   userId                String         @unique
   user                  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   status                ProviderStatus @default(PENDING)
+  businessName           String?
+  mainService            String?
+  location               String?
+  moneyRange             String?
+  serviceOfferings       Json?
   bio                   String?
   profileImageUrl       String?
   profileImagePublicId  String?
@@ -216,10 +221,36 @@ model Language {
   id        Int      @id @default(autoincrement())
   title     String   @unique
   prices    Json
+  translators TranslatorLanguage[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("languages")
+}
+
+model Translator {
+  id                   Int      @id @default(autoincrement())
+  name                 String
+  email                String   @unique
+  phone                String
+  profileImageUrl      String?
+  profileImagePublicId String?
+  languages            TranslatorLanguage[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@map("translators")
+}
+
+model TranslatorLanguage {
+  translatorId Int
+  languageId   Int
+  translator   Translator @relation(fields: [translatorId], references: [id], onDelete: Cascade)
+  language     Language   @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([translatorId, languageId])
+  @@index([languageId])
+  @@map("translator_languages")
 }
 
 model StarterGuideCategory {

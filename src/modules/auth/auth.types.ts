@@ -14,6 +14,16 @@ export type RegisterInput = {
     name: string;
     password: string;
     role?: Exclude<Role, 'ADMIN'>;
+
+    // Provider-only fields (collected on the frontend register form)
+    businessName?: string;
+    service?: string;
+    location?: string;
+    moneyRange?: string;
+    services?: Array<{
+        name: string;
+        price: string;
+    }>;
 };
 
 export type LoginInput = {

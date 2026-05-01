@@ -18,7 +18,19 @@ export const providersRepository = {
         return prisma.provider.findUnique({ where: { userId }, include: { user: true } });
     },
 
-    updateByUserId: async (userId: string, data: { bio?: string | null; profileImageUrl?: string | null; profileImagePublicId?: string | null }) => {
+    updateByUserId: async (
+        userId: string,
+        data: {
+            bio?: string | null;
+            profileImageUrl?: string | null;
+            profileImagePublicId?: string | null;
+            businessName?: string | null;
+            mainService?: string | null;
+            location?: string | null;
+            moneyRange?: string | null;
+            serviceOfferings?: any;
+        }
+    ) => {
         return prisma.provider.update({ where: { userId }, data, include: { user: true } });
     },
 

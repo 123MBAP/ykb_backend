@@ -20,6 +20,14 @@ export const adminRepository = {
         return prisma.request.findMany({ include: { user: true }, orderBy: { createdAt: 'desc' } });
     },
 
+    listProviders: async () => {
+        return prisma.provider.findMany({ include: { user: true }, orderBy: { createdAt: 'desc' } });
+    },
+
+    getProviderById: async (providerId: string) => {
+        return prisma.provider.findUnique({ where: { id: providerId }, include: { user: true } });
+    },
+
     updateProviderStatus: async (providerId: string, status: ProviderStatus) => {
         return prisma.provider.update({ where: { id: providerId }, data: { status }, include: { user: true } });
     },

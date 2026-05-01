@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { asyncHandler } from '../../utils/asyncHandler';
 import { adminService } from './admin.service';
+import { AppError } from '../../utils/appError';
 
 export const adminController = {
     listBookings: asyncHandler(async (_req: Request, res: Response) => {
@@ -16,6 +17,18 @@ export const adminController = {
     listRequests: asyncHandler(async (_req: Request, res: Response) => {
         const requests = await adminService.listRequests();
         res.status(200).json({ requests });
+    }),
+
+    listProviders: asyncHandler(async (_req: Request, res: Response) => {
+        const providers = await adminService.listProviders();
+        res.status(200).json({ providers });
+    }),
+
+    getProviderById: asyncHandler(async (req: Request, res: Response) => {
+        const providerId = req.params.providerId;
+        const provider = await adminService.getProviderById(providerId);
+        if (!provider) throw new AppError('Provider not found', 404, 'NOT_FOUND');
+        res.status(200).json({ provider });
     }),
 
     verifyProvider: asyncHandler(async (req: Request, res: Response) => {
