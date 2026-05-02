@@ -11,6 +11,7 @@ import { uploadsRouter } from './modules/uploads/uploads.routes';
 import { adminRouter } from './modules/admin/admin.routes';
 import { publicServicesRouter } from './modules/publicServices/publicServices.routes';
 import { languagesRouter } from './modules/languages/languages.routes';
+import { translatorsRouter } from './modules/translators/translators.routes';
 import { starterGuideCategoriesRouter } from './modules/starterGuideCategories/starterGuideCategories.routes';
 
 export const routes = Router();
@@ -29,8 +30,15 @@ routes.use('/admin', adminRouter);
 // Simple services list for the frontend marketing/UI.
 routes.use('/services', publicServicesRouter);
 
-// Translator languages + dynamic pricing.
+/**
+ * Translator languages + dynamic pricing.
+ */
 routes.use('/languages', languagesRouter);
+
+/**
+ * Translator management (create translators + assign languageIds).
+ */
+routes.use('/translators', translatorsRouter);
 
 // Starter guide categories + optional subcategories.
 routes.use('/starter-guide-categories', starterGuideCategoriesRouter);
