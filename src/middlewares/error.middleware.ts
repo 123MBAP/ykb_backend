@@ -12,6 +12,10 @@ const isPrismaInitError = (err: unknown): err is Prisma.PrismaClientInitializati
 };
 
 export const errorHandler = (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+    // Log full error for debugging in development
+    // eslint-disable-next-line no-console
+    console.error(err);
+
     if (err instanceof ZodError) {
         return res.status(400).json({
             error: {
@@ -29,6 +33,15 @@ export const errorHandler = (err: unknown, _req: Request, res: Response, _next: 
                     code: 'CONFLICT',
                     message: 'Unique constraint violation',
                     details: err.meta
+                }
+            });
+        }
+
+        if (err.code === 'P2024') {
+            return res.status(503).json({
+                error: {
+                    code: 'DB_UNAVAILABLE',
+                    message: 'Database connection pool is temporarily exhausted. Please try again.'
                 }
             });
         }

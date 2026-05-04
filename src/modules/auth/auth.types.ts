@@ -23,6 +23,7 @@ export type RegisterInput = {
     services?: Array<{
         name: string;
         price: string;
+        description?: string;
     }>;
 };
 

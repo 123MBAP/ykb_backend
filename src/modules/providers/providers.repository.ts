@@ -3,10 +3,10 @@ import type { ProviderStatus } from '../../utils/prismaEnums';
 import { prisma } from '../../config/prisma';
 
 export const providersRepository = {
-    findApproved: async (): Promise<Provider[]> => {
+    findPublic: async (): Promise<Provider[]> => {
         return prisma.provider.findMany({
-            where: { status: 'APPROVED' },
-            include: { user: true }
+            include: { user: true },
+            orderBy: { createdAt: 'desc' }
         });
     },
 

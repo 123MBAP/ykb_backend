@@ -4,7 +4,7 @@ import { providersService } from './providers.service';
 
 export const providersController = {
     list: asyncHandler(async (_req: Request, res: Response) => {
-        const providers = await providersService.listApproved();
+        const providers = await providersService.listPublic();
         res.status(200).json({ providers });
     }),
 

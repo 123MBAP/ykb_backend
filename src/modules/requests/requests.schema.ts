@@ -14,6 +14,23 @@ export const requestIdParamSchema = z.object({
     params: z.object({ requestId: z.string().min(1) })
 });
 
+export const updateMyRequestSchema = z.object({
+    params: z.object({ requestId: z.string().min(1) }),
+    body: z.object({
+        description: z.string().min(10).max(5000).optional(),
+        location: z.string().min(2).max(500).optional(),
+        preferredDate: z.string().datetime().nullable().optional(),
+        budget: z.string().regex(/^\d+(\.\d{1,2})?$/, 'budget must be a decimal string').nullable().optional()
+    })
+});
+
+export const addMyRequestNoteSchema = z.object({
+    params: z.object({ requestId: z.string().min(1) }),
+    body: z.object({
+        note: z.string().min(2).max(3000)
+    })
+});
+
 export const adminUpdateRequestSchema = z.object({
     params: z.object({ requestId: z.string().min(1) }),
     body: z.object({

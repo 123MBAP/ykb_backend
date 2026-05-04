@@ -4,8 +4,8 @@ import { providersRepository } from './providers.repository';
 import type { UpdateProviderMeInput } from './providers.types';
 
 export const providersService = {
-    listApproved: async () => {
-        return providersRepository.findApproved();
+    listPublic: async () => {
+        return providersRepository.findPublic();
     },
 
     getById: async (providerId: string) => {
