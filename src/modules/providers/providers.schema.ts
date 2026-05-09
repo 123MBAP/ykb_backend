@@ -28,6 +28,26 @@ export const verifyProviderSchema = z.object({
     body: z.object({
         status: z.nativeEnum(ProviderStatus).refine((s: ProviderStatus) => s !== ProviderStatus.PENDING, {
             message: 'Status must be APPROVED or REJECTED'
-        })
+        }),
+        rejectionReason: z.string().max(3000).nullable().optional()
+    }).superRefine((data, ctx) => {
+        const isRejected = data.status === ProviderStatus.REJECTED;
+        const hasReason = typeof data.rejectionReason === 'string' && data.rejectionReason.trim().length > 0;
+
+        if (isRejected && !hasReason) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ['rejectionReason'],
+                message: 'Rejection reason is required when rejecting a provider.'
+            });
+        }
+
+        if (!isRejected && hasReason) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ['rejectionReason'],
+                message: 'Rejection reason may only be provided when status is REJECTED.'
+            });
+        }
     })
 });

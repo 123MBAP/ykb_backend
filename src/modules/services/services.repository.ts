@@ -50,6 +50,19 @@ export const servicesRepository = {
         });
     },
 
+    createServiceImage: async (data: { serviceId: string; url: string; publicId: string }) => {
+        return prisma.serviceImage.create({
+            data,
+            include: { service: true }
+        });
+    },
+
+    deleteServiceImages: async (serviceId: string) => {
+        return prisma.serviceImage.deleteMany({
+            where: { serviceId }
+        });
+    },
+
     addImage: async (serviceId: string, data: { url: string; publicId: string }) => {
         return prisma.serviceImage.create({ data: { serviceId, ...data } });
     },

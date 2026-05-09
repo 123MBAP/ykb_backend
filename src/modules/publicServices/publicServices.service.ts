@@ -25,11 +25,13 @@ export const publicServicesService = {
         }
     },
 
-    create: async (input: { title: string; description: string }) => {
+    create: async (input: { title: string; description: string; imageUrl?: string | null; imagePublicId?: string | null }) => {
         try {
             return await publicServicesRepository.create({
                 title: input.title.trim(),
-                description: input.description.trim()
+                description: input.description.trim(),
+                imageUrl: input.imageUrl?.trim() || null,
+                imagePublicId: input.imagePublicId?.trim() || null
             });
         } catch (err) {
             if (isDbUnreachable(err)) {
@@ -39,14 +41,16 @@ export const publicServicesService = {
         }
     },
 
-    update: async (id: number, input: { title?: string; description?: string }) => {
+    update: async (id: number, input: { title?: string; description?: string; imageUrl?: string | null; imagePublicId?: string | null }) => {
         try {
             const existing = await publicServicesRepository.findById(id);
             if (!existing) throw new AppError('Service not found', 404, 'NOT_FOUND');
 
             return await publicServicesRepository.updateById(id, {
                 title: input.title?.trim(),
-                description: input.description?.trim()
+                description: input.description?.trim(),
+                imageUrl: input.imageUrl !== undefined ? (input.imageUrl?.trim() || null) : undefined,
+                imagePublicId: input.imagePublicId !== undefined ? (input.imagePublicId?.trim() || null) : undefined
             });
         } catch (err) {
             if (isDbUnreachable(err)) {

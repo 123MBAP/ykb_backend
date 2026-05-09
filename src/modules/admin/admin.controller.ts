@@ -34,7 +34,8 @@ export const adminController = {
     verifyProvider: asyncHandler(async (req: Request, res: Response) => {
         const providerId = req.validated?.params?.providerId;
         const status = req.validated?.body?.status;
-        const provider = await adminService.verifyProvider(providerId, status);
+        const rejectionReason = req.validated?.body?.rejectionReason;
+        const provider = await adminService.verifyProvider(providerId, status, rejectionReason);
         res.status(200).json({ provider });
     }),
 
@@ -43,6 +44,40 @@ export const adminController = {
         const status = req.validated?.body?.status;
         const adminNotes = req.validated?.body?.adminNotes;
         const request = await adminService.updateRequest(requestId, status, adminNotes);
+        res.status(200).json({ request });
+    }),
+
+    listUsers: asyncHandler(async (req: Request, res: Response) => {
+        const role = (req.query.role as string) || undefined;
+        const users = await adminService.listUsers(role);
+        res.status(200).json({ users });
+    }),
+
+    getProvidersForService: asyncHandler(async (req: Request, res: Response) => {
+        const serviceName = req.query.service as string;
+        if (!serviceName) {
+            throw new AppError('Service name is required', 400, 'BAD_REQUEST');
+        }
+        const providers = await adminService.getProvidersForService(serviceName);
+        res.status(200).json({ providers });
+    }),
+
+    assignProviderToRequest: asyncHandler(async (req: Request, res: Response) => {
+        const requestId = req.validated?.params?.requestId;
+        const providerId = req.validated?.body?.providerId;
+        const request = await adminService.assignProviderToRequest(requestId, providerId);
+        res.status(200).json({ request });
+    }),
+
+    confirmRequestResolution: asyncHandler(async (req: Request, res: Response) => {
+        const requestId = req.params.requestId;
+        const request = await adminService.confirmRequestResolution(requestId);
+        res.status(200).json({ request });
+    }),
+
+    markRequestAsResolved: asyncHandler(async (req: Request, res: Response) => {
+        const requestId = req.params.requestId;
+        const request = await adminService.markRequestAsResolved(requestId);
         res.status(200).json({ request });
     })
 };

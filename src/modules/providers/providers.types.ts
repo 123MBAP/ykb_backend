@@ -14,4 +14,5 @@ export type UpdateProviderMeInput = {
 
 export type VerifyProviderInput = {
     status: ProviderStatus;
+    rejectionReason?: string | null;
 };

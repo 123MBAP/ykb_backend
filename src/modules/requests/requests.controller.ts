@@ -14,6 +14,11 @@ export const requestsController = {
         res.status(200).json({ requests });
     }),
 
+    listAssignedToMe: asyncHandler(async (req: Request, res: Response) => {
+        const requests = await requestsService.listAssignedToMe(req.auth!);
+        res.status(200).json({ requests });
+    }),
+
     updateMine: asyncHandler(async (req: Request, res: Response) => {
         const requestId = req.validated?.params?.requestId;
         const body = req.validated?.body;
@@ -25,6 +30,19 @@ export const requestsController = {
         const requestId = req.validated?.params?.requestId;
         const note = req.validated?.body?.note;
         const request = await requestsService.addNoteMine(req.auth!, requestId, note);
+        res.status(200).json({ request });
+    }),
+
+    providerMarkResolved: asyncHandler(async (req: Request, res: Response) => {
+        const requestId = req.params.requestId;
+        const request = await requestsService.providerMarkResolved(req.auth!, requestId);
+        res.status(200).json({ request });
+    }),
+
+    customerRateRequest: asyncHandler(async (req: Request, res: Response) => {
+        const requestId = req.params.requestId;
+        const rating = req.validated?.body?.rating;
+        const request = await requestsService.customerRateRequest(req.auth!, requestId, rating);
         res.status(200).json({ request });
     })
 };

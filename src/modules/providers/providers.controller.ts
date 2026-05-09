@@ -27,7 +27,8 @@ export const providersController = {
     verify: asyncHandler(async (req: Request, res: Response) => {
         const providerId = req.validated?.params?.providerId;
         const status = req.validated?.body?.status;
-        const provider = await providersService.verify(providerId, status);
+        const rejectionReason = req.validated?.body?.rejectionReason;
+        const provider = await providersService.verify(providerId, status, rejectionReason);
         res.status(200).json({ provider });
     })
 };

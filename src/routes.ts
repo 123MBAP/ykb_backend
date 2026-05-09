@@ -13,6 +13,8 @@ import { publicServicesRouter } from './modules/publicServices/publicServices.ro
 import { languagesRouter } from './modules/languages/languages.routes';
 import { translatorsRouter } from './modules/translators/translators.routes';
 import { starterGuideCategoriesRouter } from './modules/starterGuideCategories/starterGuideCategories.routes';
+import { plansRouter } from './modules/plans/plans.routes';
+import { subscriptionsRouter } from './modules/subscriptions/subscriptions.routes';
 
 export const routes = Router();
 
@@ -26,6 +28,8 @@ routes.use('/requests', requestsRouter);
 routes.use('/reviews', reviewsRouter);
 routes.use('/uploads', uploadsRouter);
 routes.use('/admin', adminRouter);
+routes.use('/plans', plansRouter);
+routes.use('/subscriptions', subscriptionsRouter);
 
 // Simple services list for the frontend marketing/UI.
 routes.use('/services', publicServicesRouter);

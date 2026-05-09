@@ -51,7 +51,7 @@ export const servicesService = {
             }
         }
 
-        return servicesRepository.createService({
+        const service = await servicesRepository.createService({
             categoryId: input.categoryId,
             title: input.title,
             description: input.description,
@@ -60,6 +60,17 @@ export const servicesService = {
             isPlatformOwned,
             providerId
         });
+
+        // Create service image if provided
+        if (input.imageUrl && input.imagePublicId) {
+            await servicesRepository.createServiceImage({
+                serviceId: service.id,
+                url: input.imageUrl,
+                publicId: input.imagePublicId
+            });
+        }
+
+        return servicesRepository.findServiceById(service.id);
     },
 
     updateService: async (auth: { userId: string; role: Role }, serviceId: string, input: UpdateServiceInput) => {
@@ -84,7 +95,27 @@ export const servicesService = {
         if (input.basePrice) data.basePrice = new Prisma.Decimal(input.basePrice);
         if (input.description === null) data.description = null;
 
-        return servicesRepository.updateServiceById(serviceId, data);
+        // Remove imageUrl and imagePublicId from the main service update data
+        delete data.imageUrl;
+        delete data.imagePublicId;
+
+        // Update the service
+        const updatedService = await servicesRepository.updateServiceById(serviceId, data);
+
+        // Handle image updates
+        if (input.imageUrl && input.imagePublicId) {
+            // Delete existing images
+            await servicesRepository.deleteServiceImages(serviceId);
+            
+            // Create new image
+            await servicesRepository.createServiceImage({
+                serviceId,
+                url: input.imageUrl,
+                publicId: input.imagePublicId
+            });
+        }
+
+        return servicesRepository.findServiceById(serviceId);
     },
 
     addServiceImage: async (auth: { userId: string; role: Role }, serviceId: string, input: AddServiceImageInput) => {

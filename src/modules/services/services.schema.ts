@@ -13,7 +13,9 @@ export const createServiceSchema = z.object({
         description: z.string().max(5000).nullable().optional(),
         basePrice: z.string().regex(/^\d+(\.\d{1,2})?$/, 'basePrice must be a decimal string'),
         currency: z.string().min(3).max(3).optional(),
-        isPlatformOwned: z.boolean().optional()
+        isPlatformOwned: z.boolean().optional(),
+        imageUrl: z.string().url().nullable().optional(),
+        imagePublicId: z.string().nullable().optional()
     })
 });
 
@@ -24,7 +26,9 @@ export const updateServiceSchema = z.object({
         title: z.string().min(2).max(200).optional(),
         description: z.string().max(5000).nullable().optional(),
         basePrice: z.string().regex(/^\d+(\.\d{1,2})?$/, 'basePrice must be a decimal string').optional(),
-        currency: z.string().min(3).max(3).optional()
+        currency: z.string().min(3).max(3).optional(),
+        imageUrl: z.string().url().nullable().optional(),
+        imagePublicId: z.string().nullable().optional()
     })
 });
 

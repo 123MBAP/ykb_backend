@@ -1,5 +1,5 @@
 import type { Provider } from '@prisma/client';
-import type { ProviderStatus } from '../../utils/prismaEnums';
+import { ProviderStatus } from '../../utils/prismaEnums';
 import { prisma } from '../../config/prisma';
 
 export const providersRepository = {
@@ -34,7 +34,14 @@ export const providersRepository = {
         return prisma.provider.update({ where: { userId }, data, include: { user: true } });
     },
 
-    updateStatus: async (providerId: string, status: ProviderStatus) => {
-        return prisma.provider.update({ where: { id: providerId }, data: { status }, include: { user: true } });
+    updateStatus: async (providerId: string, status: ProviderStatus, rejectionReason?: string | null) => {
+        return prisma.provider.update({
+            where: { id: providerId },
+            data: {
+                status,
+                rejectionReason: status === ProviderStatus.REJECTED ? rejectionReason ?? null : null
+            },
+            include: { user: true }
+        });
     }
 };

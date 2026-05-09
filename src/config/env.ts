@@ -13,7 +13,12 @@ const envSchema = z.object({
     CLOUDINARY_CLOUD_NAME: z.string().min(1),
     CLOUDINARY_API_KEY: z.string().min(1),
     CLOUDINARY_API_SECRET: z.string().min(1),
-    PLATFORM_FEE_BPS: z.coerce.number().int().min(0).max(10_000).default(0)
+    PLATFORM_FEE_BPS: z.coerce.number().int().min(0).max(10_000).default(0),
+    PESAPAY_CONSUMER_KEY: z.string().min(1),
+    PESAPAY_CONSUMER_SECRET: z.string().min(1),
+    PESAPAY_BASE_URL: z.string().min(1),
+    PESAPAY_IPN_ID: z.string().min(1),
+    PESAPAY_CALLBACK_URL: z.string().min(1),
 });
 
 export type Env = z.infer<typeof envSchema>;

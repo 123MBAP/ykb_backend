@@ -38,3 +38,10 @@ export const adminUpdateRequestSchema = z.object({
         adminNotes: z.string().max(3000).nullable().optional()
     })
 });
+
+export const rateRequestSchema = z.object({
+    params: z.object({ requestId: z.string().min(1) }),
+    body: z.object({
+        rating: z.number().int().min(1).max(10)
+    })
+});

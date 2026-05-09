@@ -25,8 +25,8 @@ export const providersService = {
         return provider;
     },
 
-    verify: async (providerId: string, status: ProviderStatus) => {
-        const provider = await providersRepository.updateStatus(providerId, status);
+    verify: async (providerId: string, status: ProviderStatus, rejectionReason?: string | null) => {
+        const provider = await providersRepository.updateStatus(providerId, status, rejectionReason);
         return provider;
     }
 };

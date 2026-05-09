@@ -9,6 +9,8 @@ export type CreateServiceInput = {
     basePrice: string;
     currency?: string;
     isPlatformOwned?: boolean;
+    imageUrl?: string | null;
+    imagePublicId?: string | null;
 };
 
 export type UpdateServiceInput = Partial<CreateServiceInput>;

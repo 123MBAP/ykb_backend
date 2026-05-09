@@ -5,7 +5,7 @@ export const publicServicesRepository = {
         return prisma.publicService.findMany({ orderBy: { id: 'asc' } });
     },
 
-    create: async (data: { title: string; description: string }) => {
+    create: async (data: { title: string; description: string; imageUrl?: string | null; imagePublicId?: string | null }) => {
         return prisma.publicService.create({ data });
     },
 
@@ -13,7 +13,7 @@ export const publicServicesRepository = {
         return prisma.publicService.findUnique({ where: { id } });
     },
 
-    updateById: async (id: number, data: { title?: string; description?: string }) => {
+    updateById: async (id: number, data: { title?: string; description?: string; imageUrl?: string | null; imagePublicId?: string | null }) => {
         return prisma.publicService.update({ where: { id }, data });
     }
 };
